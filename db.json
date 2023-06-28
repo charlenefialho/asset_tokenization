@@ -1,0 +1,29 @@
+{
+  "tokens": [
+      { "id": 1, 
+      "nameToken":"token1",
+      "value": 10.5, 
+      "quantity": 20 
+    },
+      { "id": 30, 
+      "nameToken":"token1",
+      "value": 8.2, 
+      "quantity": 15 
+    },
+      { "id": 20, 
+      "nameToken":"token1",
+      "value": 5.9, 
+      "quantity": 10 
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
