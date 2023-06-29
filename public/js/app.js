@@ -37,15 +37,6 @@ export function showTransactionReport(user) {
         console.log(`Token ${index + 1}: ID ${token.id}, Valor R$${token.value}`);
     });
 }
-export function createToken(tokenMarket) {
-    const id = Math.floor(Math.random() * 100);
-    const nameToken = Math.random().toString(36).substring(7);
-    const value = Math.random() * (10 - 0.01) + 0.01;
-    const quantity = Math.floor(Math.random() * 100) + 1;
-    const token = { id, nameToken, value, quantity };
-    tokenMarket.tokens.push(token);
-    return token;
-}
 export function modifyTokenValue(token) {
     const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2
     const newValue = token.value * randomFactor;

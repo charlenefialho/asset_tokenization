@@ -48,16 +48,7 @@ export function buyToken(user: User, token: Token): void {
     });
   }
   
- export function createToken(tokenMarket: TokenMarket): Token {
-    const id = Math.floor(Math.random() * 100);
-    const nameToken = Math.random().toString(36).substring(7);
-    const value = Math.random() * (10 - 0.01) + 0.01;
-    const quantity = Math.floor(Math.random() * 100) + 1;
-
-    const token: Token = { id, nameToken, value, quantity };
-    tokenMarket.tokens.push(token);
-    return token;
-  }
+ 
   
 export function modifyTokenValue(token: Token): void {
     const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2

@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const buyButton = document.querySelector('.buyButton');
 const divTokenList = document.querySelector('#tokenList');
 buyButton.addEventListener("click", buyToken);
+setIntervalAddNewToken();
+//Erro de evento click quando tem o load
 window.addEventListener('load', showAvailableTokens);
 function buyToken() {
     let answer;
@@ -31,5 +33,35 @@ export function showAvailableTokens() {
           <button class="buyButton">Comprar</button>
         </div>`;
         }
+    });
+}
+export function createToken() {
+    const id = Math.floor(Math.random() * 100);
+    const nameToken = Math.random().toString(36).substring(7);
+    const value = Math.random() * (10 - 0.01) + 0.01;
+    const quantity = Math.floor(Math.random() * 100) + 1;
+    const token = { id, nameToken, value, quantity };
+    return token;
+}
+function setIntervalAddNewToken() {
+    setInterval(makeRequestToAddNewToken, 60000);
+}
+export function makeRequestToAddNewToken() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = createToken();
+        yield fetch('http://localhost:3000/tokens', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+            console.log('Dados enviados com sucesso:', result);
+        })
+            .catch(error => {
+            console.error('Erro ao enviar os dados:', error);
+        });
     });
 }
