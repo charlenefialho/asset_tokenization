@@ -7,15 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const buyButton = document.querySelector('.buyButton');
-const divTokenList = document.querySelector('#tokenList');
-buyButton.addEventListener("click", buyToken);
+const divTokenList = document.querySelector('#tokenCards');
+document.addEventListener('DOMContentLoaded', () => {
+    showAvailableTokens();
+});
 setIntervalAddNewToken();
-//Erro de evento click quando tem o load
-window.addEventListener('load', showAvailableTokens);
 function buyToken() {
     let answer;
-    answer = confirm("Deseja comprar mais tokens?");
+    answer = confirm(`Deseja comprar mais tokens?`);
 }
 function getTokenList() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -26,12 +25,17 @@ function getTokenList() {
 export function showAvailableTokens() {
     getTokenList().then((tokenList) => {
         for (let i in tokenList) {
-            divTokenList.innerHTML += `<div class="card">
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.innerHTML = `
           <h2>${tokenList[i].nameToken}</h2>
           <p>Valor: R$${tokenList[i].value.toFixed(2)}</p>
           <p>Quantidade disponível: ${tokenList[i].quantity}</p>
-          <button class="buyButton">Comprar</button>
-        </div>`;
+          <button class="buyButton" id="${tokenList[i].id}">Comprar</button>
+        `;
+            divTokenList.appendChild(card);
+            const buyButton = card.querySelector('.buyButton');
+            buyButton.addEventListener('click', buyToken);
         }
     });
 }

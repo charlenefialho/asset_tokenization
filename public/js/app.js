@@ -34,7 +34,7 @@ export function showTransactionReport(user) {
     console.log(`Saldo restante: R$${user.balance}`);
     console.log('Tokens comprados:');
     user.tokens.forEach((token, index) => {
-        console.log(`Token ${index + 1}: ID ${token.id}, Valor R$${token.value}`);
+        console.log(`${token.nameToken}: quantidade: ${token.quantity}, Valor R$${token.value}`);
     });
 }
 export function modifyTokenValue(token) {

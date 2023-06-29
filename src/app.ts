@@ -44,12 +44,11 @@ export function buyToken(user: User, token: Token): void {
     console.log(`Saldo restante: R$${user.balance}`);
     console.log('Tokens comprados:');
     user.tokens.forEach((token, index) => {
-      console.log(`Token ${index + 1}: ID ${token.id}, Valor R$${token.value}`);
+      console.log(`${token.nameToken}: quantidade: ${token.quantity}, Valor R$${token.value}`);
     });
   }
-  
- 
-  
+
+    
 export function modifyTokenValue(token: Token): void {
     const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2
     const newValue = token.value * randomFactor;
