@@ -1,3 +1,10 @@
+export class User {
+    constructor(nameUser, balance, tokens) {
+        this.nameUser = nameUser;
+        this.balance = balance;
+        this.tokens = tokens;
+    }
+}
 export function buyToken(user, token) {
     if (user.balance >= token.value) {
         user.tokens.push(token);
@@ -18,12 +25,12 @@ export function buyTokenBatch(user, token, quantity, discount) {
         token.quantity -= quantity;
     }
     else {
-        console.log('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
+        alert('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
     }
 }
 export function showTransactionReport(user) {
     console.log('Relatório de transação:');
-    console.log(`Nome do usuário: ${user.name}`);
+    console.log(`Nome do usuário: ${user.nameUser}`);
     console.log(`Saldo restante: R$${user.balance}`);
     console.log('Tokens comprados:');
     user.tokens.forEach((token, index) => {
@@ -44,37 +51,3 @@ export function modifyTokenValue(token) {
     const newValue = token.value * randomFactor;
     token.value = newValue;
 }
-/*const tokens: Token[] = []; // Mercado de tokens vazio
-
-// Criar alguns tokens no mercado
-const token1: Token = { id: 123, nameToken:'token1',value: 10.5, quantity: 20 };
-const token2: Token = { id: 30, nameToken:'token1',value: 8.2, quantity: 15 };
-const token3: Token = { id: 20, nameToken:'token1',value: 5.9, quantity: 10 };
-
-tokens.push(token1, token2, token3);
-
-let tokenMarket: TokenMarket ={
-  tokens: tokens
-};
-
-
-// Criar um usuário
-const user: User = {
-  name: 'João',
-  balance: 100,
-  tokens: []
-};
-
-// Comprar um token
-buyToken(user, token1);
-
-// Mostrar relatório de transação
-showTransactionReport(user);
-
-// Modificar o valor dos tokens no mercado
-modifyTokenValue(token1);
-modifyTokenValue(token2);
-modifyTokenValue(token3);
-
-// Mostrar os tokens disponíveis no mercado
-showAvailableTokens(tokenMarket);*/

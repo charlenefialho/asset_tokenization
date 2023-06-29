@@ -1,11 +1,16 @@
 import * as module from './app';
 import { Token } from './interfaces';
 import { TokenMarket } from './interfaces';
-const buyButton = document.querySelector('.buyButton') as HTMLElement;
+
+const buyButton = document.querySelector('.buyButton') as HTMLButtonElement;
+
 const divTokenList = document.querySelector('#tokenList') as HTMLElement;
 
-buyButton.addEventListener('click',buyToken);
-window.addEventListener('load',showAvailableTokens); 
+buyButton.addEventListener("click", buyToken);
+
+
+//window.addEventListener('load',showAvailableTokens); 
+
 
 function buyToken() {
       let answer : boolean;

@@ -1,8 +1,19 @@
 import { Token } from './interfaces';
-import { User } from './interfaces';
 import { TokenMarket } from './interfaces';
 
-  export function buyToken(user: User, token: Token): void {
+export class User {
+  nameUser: string;
+  balance: number;
+  tokens: Token[];
+
+  constructor(nameUser: string,balance:number,tokens:Token[]){
+      this.nameUser = nameUser;
+      this.balance = balance;
+      this.tokens = tokens;
+  }
+}
+
+export function buyToken(user: User, token: Token): void {
     if (user.balance >= token.value) {
       user.tokens.push(token);
       user.balance -= token.value;
@@ -11,6 +22,8 @@ import { TokenMarket } from './interfaces';
       alert('Saldo insuficiente para comprar o token.');
     }
   }
+
+  
   
  export function buyTokenBatch(user: User, token: Token, quantity: number, discount: number): void {
     const totalPrice = token.value * quantity * (1 - discount);
@@ -21,13 +34,13 @@ import { TokenMarket } from './interfaces';
       user.balance -= totalPrice;
       token.quantity -= quantity;
     } else {
-      console.log('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
+      alert('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
     }
   } 
   
  export function showTransactionReport(user: User): void {
     console.log('Relatório de transação:');
-    console.log(`Nome do usuário: ${user.name}`);
+    console.log(`Nome do usuário: ${user.nameUser}`);
     console.log(`Saldo restante: R$${user.balance}`);
     console.log('Tokens comprados:');
     user.tokens.forEach((token, index) => {
@@ -53,39 +66,3 @@ export function modifyTokenValue(token: Token): void {
   }
   
 
-
-  /*const tokens: Token[] = []; // Mercado de tokens vazio
-
-  // Criar alguns tokens no mercado
-  const token1: Token = { id: 123, nameToken:'token1',value: 10.5, quantity: 20 };
-  const token2: Token = { id: 30, nameToken:'token1',value: 8.2, quantity: 15 };
-  const token3: Token = { id: 20, nameToken:'token1',value: 5.9, quantity: 10 };
-  
-  tokens.push(token1, token2, token3);
-
-  let tokenMarket: TokenMarket ={
-    tokens: tokens
-  };
-
-  
-  // Criar um usuário
-  const user: User = {
-    name: 'João',
-    balance: 100,
-    tokens: []
-  };
-  
-  // Comprar um token
-  buyToken(user, token1);
-  
-  // Mostrar relatório de transação
-  showTransactionReport(user);
-  
-  // Modificar o valor dos tokens no mercado
-  modifyTokenValue(token1);
-  modifyTokenValue(token2);
-  modifyTokenValue(token3);
-  
-  // Mostrar os tokens disponíveis no mercado
-  showAvailableTokens(tokenMarket);*/
-  
