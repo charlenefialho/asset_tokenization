@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 const buyButton = document.querySelector('.buyButton');
 const divTokenList = document.querySelector('#tokenList');
 buyButton.addEventListener("click", buyToken);
-//window.addEventListener('load',showAvailableTokens); 
+window.addEventListener('load', showAvailableTokens);
 function buyToken() {
     let answer;
     answer = confirm("Deseja comprar mais tokens?");

@@ -8,8 +8,8 @@ const divTokenList = document.querySelector('#tokenList') as HTMLElement;
 
 buyButton.addEventListener("click", buyToken);
 
-
-//window.addEventListener('load',showAvailableTokens); 
+//Erro de evento click quando tem o load
+window.addEventListener('load',showAvailableTokens); 
 
 
 function buyToken() {
