@@ -2,104 +2,128 @@
   "users": [
     {
       "id": 12,
-      "name": "charlene",
-      "balance": 1304.3842084135845,
+      "nameUser": "charlene",
+      "balance": 454.27478300112796,
       "tokens": [
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 19.672567639260695,
-          "quantity": 15
-        },
-        {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 19.672567639260695,
-          "quantity": 15
-        },
-        {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 19.672567639260695,
-          "quantity": 15
-        },
-        {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 19.672567639260695,
-          "quantity": 15
-        },
-        {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 19.672567639260695,
-          "quantity": 15
-        },
-        {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.9196743727061323,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.9196743727061323,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.9196743727061323,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.9196743727061323,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.9196743727061323,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.5567479263957864,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.5567479263957864,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.5567479263957864,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.5567479263957864,
           "quantity": 5
         },
         {
           "id": 1,
           "nameToken": "token1",
-          "value": 22.128129491101554,
+          "value": 2.5567479263957864,
           "quantity": 5
         },
         {
-          "id": 1,
-          "nameToken": "token1",
-          "value": 19.255456335933093,
-          "quantity": 14
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
+        },
+        {
+          "id": 34,
+          "nameToken": "yq0kyw",
+          "value": 13.369599630811363,
+          "quantity": 0
         }
       ]
     }

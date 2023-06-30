@@ -10,16 +10,48 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+export function createToken(): Token {
+  const id = Math.floor(Math.random() * 100);
+  const nameToken = Math.random().toString(36).substring(7);
+  const value = Math.random() * (10 - 0.01) + 0.01;
+  const quantity = Math.floor(Math.random() * 100) + 1;
 
+  const token: Token = { id, nameToken, value, quantity };
+  return token;
+}
 
-async function getTokenList() {
+export async function AddNewToken(){
+  const token = createToken();
+
+  await fetch('http://localhost:3000/tokens',{
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(token)
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log('Dados enviados com sucesso:', result);
+  })
+  .catch(error => {
+    console.error('Erro ao enviar os dados:', error);
+  });
+
+  
+}
+
+async function setIntervalAddNewToken(){
+  await setInterval(AddNewToken, 60000);
+}
+
+export async function getTokenList() {
   try {
     const response = await fetch('http://localhost:3000/tokens');
 
     if (!response.ok) {
       throw new Error("Ocorreu um erro na requisição GET.");
     }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -29,7 +61,7 @@ async function getTokenList() {
 }
 
 export async function showAvailableTokens(){
-    await getTokenList().then((tokenList: any[])=>{
+    await getTokenList().then((tokenList: Token[])=>{
       for (let i in tokenList) {
         const card = document.createElement('div');
         card.classList.add('card');
@@ -47,82 +79,13 @@ export async function showAvailableTokens(){
     })
 }
 
-export function createToken(): Token {
-  const id = Math.floor(Math.random() * 100);
-  const nameToken = Math.random().toString(36).substring(7);
-  const value = Math.random() * (10 - 0.01) + 0.01;
-  const quantity = Math.floor(Math.random() * 100) + 1;
+ 
 
-  const token: Token = { id, nameToken, value, quantity };
-  return token;
-}
-
-async function setIntervalAddNewToken(){
-  await setInterval(makeRequestToAddNewToken, 60000);
-}
-
-export async function makeRequestToAddNewToken(){
-  const data = createToken();
-  await fetch('http://localhost:3000/tokens',{
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => response.json())
-  .then(result => {
-    console.log('Dados enviados com sucesso:', result);
-  })
-  .catch(error => {
-    console.error('Erro ao enviar os dados:', error);
-  });
 
   
-}
 
 
-
-
-async function getUserById(idUser: number) {
-  const url = `http://localhost:3001/users/${idUser}`;
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Ocorreu um erro na requisição GET.");
-    }
-
-    const result = await response.json();
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-
-async function getTokenById(idToken: number) {
-  const url = `http://localhost:3000/tokens/${idToken}`;
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Ocorreu um erro na requisição GET.");
-    }
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    throw error; // Rethrow the error to propagate it to the caller
-  }
-}
-
-
-async function buyToken(event: Event) {
+export async function buyToken(event: Event) {
   const idToken = (event.target as HTMLElement).id;
   const token: Token = await getTokenById(parseInt(idToken));
   const user: User = await getUserById(12);
@@ -162,6 +125,46 @@ async function buyToken(event: Event) {
 
 }
 
+
+export async function getUserById(idUser: number) {
+  const url = `http://localhost:3001/users/${idUser}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Ocorreu um erro na requisição GET.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+export async function getTokenById(idToken: number) {
+  const url = `http://localhost:3000/tokens/${idToken}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Ocorreu um erro na requisição GET.");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; 
+  }
+}
+
+
+
 export function buyTokenBatch(user: User, token: Token, quantity: number, discount: number) {
   const totalPrice = token.value * quantity * (1 - discount);
   if (user.balance >= totalPrice && token.quantity >= quantity) {
@@ -171,12 +174,38 @@ export function buyTokenBatch(user: User, token: Token, quantity: number, discou
     }
     user.balance -= totalPrice;
     token.quantity -= quantity;
-    modifyTokenValue(token);//criar método para diminuir quantidade
+    modifyTokenValue(token);
     updateUserTokens(user.id, user);
   } else {
     alert('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
   }
 } 
+
+export async function modifyTokenValue(token: Token) {
+  const marketFactor = Math.random() * (1.2 - 0.8) + 0.8; 
+  const newValue = token.value * marketFactor;
+  token.value = newValue;
+
+  try {
+    const url = `http://localhost:3000/tokens/${token.id}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(token)
+    });
+
+
+    if (!response.ok) {
+      throw new Error('Ocorreu um erro na requisição PUT.');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+
+}
 
 async function updateUserTokens(id: number, user:User) {
   try {
@@ -200,31 +229,6 @@ async function updateUserTokens(id: number, user:User) {
 
 
 
-export async function modifyTokenValue(token: Token) {
-  const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2
-  const newValue = token.value * randomFactor;
-  token.value = newValue;
-
-  try {
-    const url = `http://localhost:3000/tokens/${token.id}`;
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(token)
-    });
-
-
-    if (!response.ok) {
-      throw new Error('Ocorreu um erro na requisição PUT.');
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-
-}
 
 
 

@@ -13,7 +13,39 @@ document.addEventListener('DOMContentLoaded', () => {
     showAvailableTokens();
     setIntervalAddNewToken();
 });
-function getTokenList() {
+export function createToken() {
+    const id = Math.floor(Math.random() * 100);
+    const nameToken = Math.random().toString(36).substring(7);
+    const value = Math.random() * (10 - 0.01) + 0.01;
+    const quantity = Math.floor(Math.random() * 100) + 1;
+    const token = { id, nameToken, value, quantity };
+    return token;
+}
+export function AddNewToken() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const token = createToken();
+        yield fetch('http://localhost:3000/tokens', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(token)
+        })
+            .then(response => response.json())
+            .then(result => {
+            console.log('Dados enviados com sucesso:', result);
+        })
+            .catch(error => {
+            console.error('Erro ao enviar os dados:', error);
+        });
+    });
+}
+function setIntervalAddNewToken() {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield setInterval(AddNewToken, 60000);
+    });
+}
+export function getTokenList() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield fetch('http://localhost:3000/tokens');
@@ -48,73 +80,7 @@ export function showAvailableTokens() {
         });
     });
 }
-export function createToken() {
-    const id = Math.floor(Math.random() * 100);
-    const nameToken = Math.random().toString(36).substring(7);
-    const value = Math.random() * (10 - 0.01) + 0.01;
-    const quantity = Math.floor(Math.random() * 100) + 1;
-    const token = { id, nameToken, value, quantity };
-    return token;
-}
-function setIntervalAddNewToken() {
-    return __awaiter(this, void 0, void 0, function* () {
-        yield setInterval(makeRequestToAddNewToken, 60000);
-    });
-}
-export function makeRequestToAddNewToken() {
-    return __awaiter(this, void 0, void 0, function* () {
-        const data = createToken();
-        yield fetch('http://localhost:3000/tokens', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-            .then(response => response.json())
-            .then(result => {
-            console.log('Dados enviados com sucesso:', result);
-        })
-            .catch(error => {
-            console.error('Erro ao enviar os dados:', error);
-        });
-    });
-}
-function getUserById(idUser) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const url = `http://localhost:3001/users/${idUser}`;
-        try {
-            const response = yield fetch(url);
-            if (!response.ok) {
-                throw new Error("Ocorreu um erro na requisição GET.");
-            }
-            const result = yield response.json();
-            return result;
-        }
-        catch (error) {
-            console.error(error);
-            throw error;
-        }
-    });
-}
-function getTokenById(idToken) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const url = `http://localhost:3000/tokens/${idToken}`;
-        try {
-            const response = yield fetch(url);
-            if (!response.ok) {
-                throw new Error("Ocorreu um erro na requisição GET.");
-            }
-            const data = yield response.json();
-            return data;
-        }
-        catch (error) {
-            console.error(error);
-            throw error; // Rethrow the error to propagate it to the caller
-        }
-    });
-}
-function buyToken(event) {
+export function buyToken(event) {
     return __awaiter(this, void 0, void 0, function* () {
         const idToken = event.target.id;
         const token = yield getTokenById(parseInt(idToken));
@@ -157,6 +123,40 @@ function buyToken(event) {
         }
     });
 }
+export function getUserById(idUser) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = `http://localhost:3001/users/${idUser}`;
+        try {
+            const response = yield fetch(url);
+            if (!response.ok) {
+                throw new Error("Ocorreu um erro na requisição GET.");
+            }
+            const result = yield response.json();
+            return result;
+        }
+        catch (error) {
+            console.error(error);
+            throw error;
+        }
+    });
+}
+export function getTokenById(idToken) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const url = `http://localhost:3000/tokens/${idToken}`;
+        try {
+            const response = yield fetch(url);
+            if (!response.ok) {
+                throw new Error("Ocorreu um erro na requisição GET.");
+            }
+            const data = yield response.json();
+            return data;
+        }
+        catch (error) {
+            console.error(error);
+            throw error;
+        }
+    });
+}
 export function buyTokenBatch(user, token, quantity, discount) {
     const totalPrice = token.value * quantity * (1 - discount);
     if (user.balance >= totalPrice && token.quantity >= quantity) {
@@ -166,23 +166,26 @@ export function buyTokenBatch(user, token, quantity, discount) {
         }
         user.balance -= totalPrice;
         token.quantity -= quantity;
-        modifyTokenValue(token); //criar método para diminuir quantidade
+        modifyTokenValue(token);
         updateUserTokens(user.id, user);
     }
     else {
         alert('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
     }
 }
-function updateUserTokens(id, user) {
+export function modifyTokenValue(token) {
     return __awaiter(this, void 0, void 0, function* () {
+        const marketFactor = Math.random() * (1.2 - 0.8) + 0.8;
+        const newValue = token.value * marketFactor;
+        token.value = newValue;
         try {
-            const url = `http://localhost:3001/users/${user.id}`;
+            const url = `http://localhost:3000/tokens/${token.id}`;
             const response = yield fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(user)
+                body: JSON.stringify(token)
             });
             if (!response.ok) {
                 throw new Error('Ocorreu um erro na requisição PUT.');
@@ -194,19 +197,16 @@ function updateUserTokens(id, user) {
         }
     });
 }
-export function modifyTokenValue(token) {
+function updateUserTokens(id, user) {
     return __awaiter(this, void 0, void 0, function* () {
-        const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2
-        const newValue = token.value * randomFactor;
-        token.value = newValue;
         try {
-            const url = `http://localhost:3000/tokens/${token.id}`;
+            const url = `http://localhost:3001/users/${user.id}`;
             const response = yield fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(token)
+                body: JSON.stringify(user)
             });
             if (!response.ok) {
                 throw new Error('Ocorreu um erro na requisição PUT.');

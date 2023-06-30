@@ -14,20 +14,16 @@ export class User {
       this.tokens = tokens;
   }
 }
+export function showTransactionReport(user: User , purchasedTokens : TokenMarket){
+  alert(`Relatório de transação:\n 
+  Nome do usuário: ${user.nameUser}\n
+  Saldo restante: R$${user.balance.toFixed(2)}\n
+  `)
   
-  
- 
-  
- export function showTransactionReport(user: User): void {
-    console.log('Relatório de transação:');
-    console.log(`Nome do usuário: ${user.nameUser}`);
-    console.log(`Saldo restante: R$${user.balance}`);
-    console.log('Tokens comprados:');
-    user.tokens.forEach((token, index) => {
-      console.log(`${token.nameToken}: quantidade: ${token.quantity}, Valor R$${token.value}`);
-    });
-  }
-
-    
+  purchasedTokens.tokens.forEach((token) => {
+    alert(`Tokens comprados:  \n
+    ${token.nameToken}: quantidade: ${purchasedTokens.tokens.length}, \nValor R$${token.value.toFixed(2)}`);
+  });
+}
 
 
