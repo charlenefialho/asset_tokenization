@@ -6,6 +6,7 @@ export interface Token {
   }
   
   export interface User {
+    id:number;
     name: string;
     balance: number;
     tokens: Token[];

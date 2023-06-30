@@ -1,26 +1,35 @@
+import { User } from './app';
 import { Token } from './interfaces';
 import { TokenMarket } from './interfaces';
 const divTokenList = document.querySelector('#tokenCards') as HTMLElement;
 
 document.addEventListener('DOMContentLoaded', () => {
+  getTokenList();
   showAvailableTokens();
+  setIntervalAddNewToken(); 
 });
 
-setIntervalAddNewToken();
 
 
-function buyToken() {
-      let answer : boolean;
-      answer= confirm(`Deseja comprar mais tokens?`);
-}
 
 async function getTokenList() {
-    return await fetch('http://localhost:3000/tokens')
-    .then(Response => Response.json())
+  try {
+    const response = await fetch('http://localhost:3000/tokens');
+
+    if (!response.ok) {
+      throw new Error("Ocorreu um erro na requisição GET.");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; 
+  }
 }
 
-export function showAvailableTokens(): void {
-    getTokenList().then((tokenList: any[])=>{
+export async function showAvailableTokens(){
+    await getTokenList().then((tokenList: any[])=>{
       for (let i in tokenList) {
         const card = document.createElement('div');
         card.classList.add('card');
@@ -33,7 +42,7 @@ export function showAvailableTokens(): void {
         divTokenList.appendChild(card);
   
         const buyButton = card.querySelector('.buyButton') as HTMLButtonElement;
-        buyButton.addEventListener('click', buyToken);
+        buyButton.addEventListener('click', buyToken)
       }
     })
 }
@@ -48,8 +57,8 @@ export function createToken(): Token {
   return token;
 }
 
-function setIntervalAddNewToken(){
-  setInterval(makeRequestToAddNewToken, 60000);
+async function setIntervalAddNewToken(){
+  await setInterval(makeRequestToAddNewToken, 60000);
 }
 
 export async function makeRequestToAddNewToken(){
@@ -71,5 +80,152 @@ export async function makeRequestToAddNewToken(){
 
   
 }
+
+
+
+
+async function getUserById(idUser: number) {
+  const url = `http://localhost:3001/users/${idUser}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Ocorreu um erro na requisição GET.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+async function getTokenById(idToken: number) {
+  const url = `http://localhost:3000/tokens/${idToken}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Ocorreu um erro na requisição GET.");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Rethrow the error to propagate it to the caller
+  }
+}
+
+
+async function buyToken(event: Event) {
+  const idToken = (event.target as HTMLElement).id;
+  const token: Token = await getTokenById(parseInt(idToken));
+  const user: User = await getUserById(12);
+
+  const amountOfTokens: string | null = prompt(`Quantos tokens de ${token.nameToken} você quer comprar?`);
+
+  if (amountOfTokens === null || amountOfTokens === '0') {
+    alert('Compra cancelada');
+  } else if (!isNaN(parseInt(amountOfTokens))) {
+    const numberOfTokens: number = parseInt(amountOfTokens);
+
+    if (numberOfTokens === 1) {
+      if (user.balance >= token.value) {
+        user.tokens.push(token);
+        user.balance -= token.value;
+        token.quantity -= 1;
+        modifyTokenValue(token);
+        updateUserTokens(user.id, user);
+      } else {
+        alert('Saldo insuficiente para comprar o token.');
+      }
+    } else {
+      if(numberOfTokens <= 20){
+        buyTokenBatch(user,token,numberOfTokens,0.2);
+      }else if(numberOfTokens >= 21 && numberOfTokens <= 50){
+        buyTokenBatch(user,token,numberOfTokens,0.25);
+      }else if(numberOfTokens >= 51 && numberOfTokens <= 100){
+        buyTokenBatch(user,token,numberOfTokens,0.3);
+      }else{
+        buyTokenBatch(user,token,numberOfTokens,0.5);
+      }
+      
+    }
+  }else{
+    alert('A quantidade de tokens a serem comprados deve ser um número!!')
+  } 
+
+}
+
+export function buyTokenBatch(user: User, token: Token, quantity: number, discount: number) {
+  const totalPrice = token.value * quantity * (1 - discount);
+  if (user.balance >= totalPrice && token.quantity >= quantity) {
+    for (let i = 0; i < quantity; i++) {
+      user.tokens.push(token);
+      modifyTokenValue(token);
+    }
+    user.balance -= totalPrice;
+    token.quantity -= quantity;
+    modifyTokenValue(token);//criar método para diminuir quantidade
+    updateUserTokens(user.id, user);
+  } else {
+    alert('Saldo insuficiente ou quantidade de tokens indisponível para comprar em lote.');
+  }
+} 
+
+async function updateUserTokens(id: number, user:User) {
+  try {
+    const url = `http://localhost:3001/users/${user.id}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    });
+
+    if (!response.ok) {
+      throw new Error('Ocorreu um erro na requisição PUT.');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+
+
+export async function modifyTokenValue(token: Token) {
+  const randomFactor = Math.random() * (1.2 - 0.8) + 0.8; // Valor entre 0.8 e 1.2
+  const newValue = token.value * randomFactor;
+  token.value = newValue;
+
+  try {
+    const url = `http://localhost:3000/tokens/${token.id}`;
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(token)
+    });
+
+
+    if (!response.ok) {
+      throw new Error('Ocorreu um erro na requisição PUT.');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+
+}
+
+
 
 
