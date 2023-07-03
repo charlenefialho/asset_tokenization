@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setIntervalAddNewToken(); 
 });
 
+setIntervalAddNewToken();
 
 export function createToken(): Token {
   const id = Math.floor(Math.random() * 100);
@@ -54,8 +55,9 @@ export async function getTokenList() {
     }
     const data = await response.json();
     return data;
+
   } catch (error) {
-    console.error(error);
+    alert(error);
     throw error; 
   }
 }
@@ -80,8 +82,56 @@ export async function showAvailableTokens(){
 }
 
  
+function checkTokenAmount(amountOfTokens: string |null, user: User, token: Token) {
+  if (amountOfTokens === null || amountOfTokens === '0') {
+    cancelPurchase();
+  } else if (!isNaN(parseInt(amountOfTokens))) {
+    const numberOfTokens = parseInt(amountOfTokens);
+    handleTokenAmount(numberOfTokens, user, token);
+  }else{
+    alert('A quantidade de tokens a serem comprados deve ser um número!!')
+  } 
+}
 
+function cancelPurchase() {
+  alert('Compra cancelada');
+}
 
+function handleTokenAmount(numberOfTokens : number, user : User, token : Token) {
+  if (numberOfTokens === 1) {
+    handleSingleTokenPurchase(user, token);
+  } else {
+    handleBatchTokenPurchase(numberOfTokens, user, token);
+  }
+}
+
+function handleBatchTokenPurchase(numberOfTokens: number, user: User, token: Token) {
+  if (numberOfTokens <= 20) {
+    buyTokenBatch(user, token, numberOfTokens, 0.2);
+  } else if (numberOfTokens >= 21 && numberOfTokens <= 50) {
+    buyTokenBatch(user, token, numberOfTokens, 0.25);
+  } else if (numberOfTokens >= 51 && numberOfTokens <= 100) {
+    buyTokenBatch(user, token, numberOfTokens, 0.3);
+  } else {
+    buyTokenBatch(user, token, numberOfTokens, 0.5);
+  }
+}
+
+function handleSingleTokenPurchase(user: User, token:Token) {
+  if (user.balance >= token.value) {
+    user.tokens.push(token);
+    user.balance -= token.value;
+    token.quantity -= 1;
+    modifyTokenValue(token);
+    updateUserTokens(user.id, user);
+  } else {
+    insufficientBalance();
+  }
+}
+
+function insufficientBalance() {
+  alert('Saldo insuficiente para comprar o token.');
+}
   
 
 
@@ -92,36 +142,7 @@ export async function buyToken(event: Event) {
 
   const amountOfTokens: string | null = prompt(`Quantos tokens de ${token.nameToken} você quer comprar?`);
 
-  if (amountOfTokens === null || amountOfTokens === '0') {
-    alert('Compra cancelada');
-  } else if (!isNaN(parseInt(amountOfTokens))) {
-    const numberOfTokens: number = parseInt(amountOfTokens);
-
-    if (numberOfTokens === 1) {
-      if (user.balance >= token.value) {
-        user.tokens.push(token);
-        user.balance -= token.value;
-        token.quantity -= 1;
-        modifyTokenValue(token);
-        updateUserTokens(user.id, user);
-      } else {
-        alert('Saldo insuficiente para comprar o token.');
-      }
-    } else {
-      if(numberOfTokens <= 20){
-        buyTokenBatch(user,token,numberOfTokens,0.2);
-      }else if(numberOfTokens >= 21 && numberOfTokens <= 50){
-        buyTokenBatch(user,token,numberOfTokens,0.25);
-      }else if(numberOfTokens >= 51 && numberOfTokens <= 100){
-        buyTokenBatch(user,token,numberOfTokens,0.3);
-      }else{
-        buyTokenBatch(user,token,numberOfTokens,0.5);
-      }
-      
-    }
-  }else{
-    alert('A quantidade de tokens a serem comprados deve ser um número!!')
-  } 
+  checkTokenAmount(amountOfTokens, user,token);
 
 }
 
@@ -169,7 +190,7 @@ export function buyTokenBatch(user: User, token: Token, quantity: number, discou
   const totalPrice = token.value * quantity * (1 - discount);
   if (user.balance >= totalPrice && token.quantity >= quantity) {
     for (let i = 0; i < quantity; i++) {
-      user.tokens.push(token);
+      user.tokens.push(token); 
       modifyTokenValue(token);
     }
     user.balance -= totalPrice;
@@ -182,7 +203,7 @@ export function buyTokenBatch(user: User, token: Token, quantity: number, discou
 } 
 
 export async function modifyTokenValue(token: Token) {
-  const marketFactor = Math.random() * (1.2 - 0.8) + 0.8; 
+  const marketFactor = 1 + 0.02 ; 
   const newValue = token.value * marketFactor;
   token.value = newValue;
 
@@ -201,7 +222,7 @@ export async function modifyTokenValue(token: Token) {
       throw new Error('Ocorreu um erro na requisição PUT.');
     }
   } catch (error) {
-    console.error(error);
+    alert(error);
     throw error;
   }
 

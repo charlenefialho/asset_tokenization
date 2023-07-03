@@ -14,6 +14,8 @@ export class User {
       this.tokens = tokens;
   }
 }
+
+
 export function showTransactionReport(user: User , purchasedTokens : TokenMarket){
   alert(`Relatório de transação:\n 
   Nome do usuário: ${user.nameUser}\n

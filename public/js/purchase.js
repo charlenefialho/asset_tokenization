@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     showAvailableTokens();
     setIntervalAddNewToken();
 });
+setIntervalAddNewToken();
 export function createToken() {
     const id = Math.floor(Math.random() * 100);
     const nameToken = Math.random().toString(36).substring(7);
@@ -56,7 +57,7 @@ export function getTokenList() {
             return data;
         }
         catch (error) {
-            console.error(error);
+            alert(error);
             throw error;
         }
     });
@@ -80,47 +81,65 @@ export function showAvailableTokens() {
         });
     });
 }
+function checkTokenAmount(amountOfTokens, user, token) {
+    if (amountOfTokens === null || amountOfTokens === '0') {
+        cancelPurchase();
+    }
+    else if (!isNaN(parseInt(amountOfTokens))) {
+        const numberOfTokens = parseInt(amountOfTokens);
+        handleTokenAmount(numberOfTokens, user, token);
+    }
+    else {
+        alert('A quantidade de tokens a serem comprados deve ser um número!!');
+    }
+}
+function cancelPurchase() {
+    alert('Compra cancelada');
+}
+function handleTokenAmount(numberOfTokens, user, token) {
+    if (numberOfTokens === 1) {
+        handleSingleTokenPurchase(user, token);
+    }
+    else {
+        handleBatchTokenPurchase(numberOfTokens, user, token);
+    }
+}
+function handleBatchTokenPurchase(numberOfTokens, user, token) {
+    if (numberOfTokens <= 20) {
+        buyTokenBatch(user, token, numberOfTokens, 0.2);
+    }
+    else if (numberOfTokens >= 21 && numberOfTokens <= 50) {
+        buyTokenBatch(user, token, numberOfTokens, 0.25);
+    }
+    else if (numberOfTokens >= 51 && numberOfTokens <= 100) {
+        buyTokenBatch(user, token, numberOfTokens, 0.3);
+    }
+    else {
+        buyTokenBatch(user, token, numberOfTokens, 0.5);
+    }
+}
+function handleSingleTokenPurchase(user, token) {
+    if (user.balance >= token.value) {
+        user.tokens.push(token);
+        user.balance -= token.value;
+        token.quantity -= 1;
+        modifyTokenValue(token);
+        updateUserTokens(user.id, user);
+    }
+    else {
+        insufficientBalance();
+    }
+}
+function insufficientBalance() {
+    alert('Saldo insuficiente para comprar o token.');
+}
 export function buyToken(event) {
     return __awaiter(this, void 0, void 0, function* () {
         const idToken = event.target.id;
         const token = yield getTokenById(parseInt(idToken));
         const user = yield getUserById(12);
         const amountOfTokens = prompt(`Quantos tokens de ${token.nameToken} você quer comprar?`);
-        if (amountOfTokens === null || amountOfTokens === '0') {
-            alert('Compra cancelada');
-        }
-        else if (!isNaN(parseInt(amountOfTokens))) {
-            const numberOfTokens = parseInt(amountOfTokens);
-            if (numberOfTokens === 1) {
-                if (user.balance >= token.value) {
-                    user.tokens.push(token);
-                    user.balance -= token.value;
-                    token.quantity -= 1;
-                    modifyTokenValue(token);
-                    updateUserTokens(user.id, user);
-                }
-                else {
-                    alert('Saldo insuficiente para comprar o token.');
-                }
-            }
-            else {
-                if (numberOfTokens <= 20) {
-                    buyTokenBatch(user, token, numberOfTokens, 0.2);
-                }
-                else if (numberOfTokens >= 21 && numberOfTokens <= 50) {
-                    buyTokenBatch(user, token, numberOfTokens, 0.25);
-                }
-                else if (numberOfTokens >= 51 && numberOfTokens <= 100) {
-                    buyTokenBatch(user, token, numberOfTokens, 0.3);
-                }
-                else {
-                    buyTokenBatch(user, token, numberOfTokens, 0.5);
-                }
-            }
-        }
-        else {
-            alert('A quantidade de tokens a serem comprados deve ser um número!!');
-        }
+        checkTokenAmount(amountOfTokens, user, token);
     });
 }
 export function getUserById(idUser) {
@@ -192,7 +211,7 @@ export function modifyTokenValue(token) {
             }
         }
         catch (error) {
-            console.error(error);
+            alert(error);
             throw error;
         }
     });
