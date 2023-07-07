@@ -41,7 +41,8 @@ export async function AddNewToken() {
 }
 
 async function setIntervalAddNewToken() {
-  await setInterval(AddNewToken, 60000);
+  const intervalInMilliseconds = 60000;
+  await setInterval(AddNewToken, intervalInMilliseconds);
 }
 
 export async function getTokenList() {
