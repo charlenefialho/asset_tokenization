@@ -23,8 +23,9 @@ export function createToken(): Token {
 
 export async function AddNewToken() {
   const token = createToken();
+  const url = "http://localhost:3000/tokens";
 
-  await fetch("http://localhost:3000/tokens", {
+  await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
