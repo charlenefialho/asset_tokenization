@@ -13,11 +13,11 @@ setIntervalAddNewToken();
 
 export function createToken(): Token {
   const id = Math.floor(Math.random() * 100);
-  const nameToken = Math.random().toString(36).substring(7);
+  const name = Math.random().toString(36).substring(7);
   const value = Math.random() * (10 - 0.01) + 0.01;
   const quantity = Math.floor(Math.random() * 100) + 1;
 
-  const token: Token = { id, nameToken, value, quantity };
+  const token: Token = { id, name, value, quantity };
   return token;
 }
 
@@ -66,7 +66,7 @@ export async function showAvailableTokens() {
       const card = document.createElement("div");
       card.classList.add("card");
       card.innerHTML = `
-          <h2>${tokenList[token].nameToken}</h2>
+          <h2>${tokenList[token].name}</h2>
           <p>Valor: R$${tokenList[token].value.toFixed(2)}</p>
           <p>Quantidade disponível: ${tokenList[token].quantity}</p>
           <button class="buyButton" id="${tokenList[token].id}">Comprar</button>
@@ -144,7 +144,7 @@ export async function buyToken(event: Event) {
   const user: User = await getUserById(12);
 
   const amountOfTokens: string | null = prompt(
-    `Quantos tokens de ${token.nameToken} você quer comprar?`
+    `Quantos tokens de ${token.name} você quer comprar?`
   );
 
   checkTokenAmount(amountOfTokens, user, token);

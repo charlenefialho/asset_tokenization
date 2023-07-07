@@ -1,6 +1,6 @@
 export interface Token {
     id: number;
-    nameToken:string
+    name:string
     value: number;
     quantity: number;
   }

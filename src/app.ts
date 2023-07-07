@@ -25,7 +25,7 @@ export function showTransactionReport(
 
   purchasedTokens.tokens.forEach((token) => {
     alert(`Tokens comprados:  \n
-    ${token.nameToken}: quantidade: ${
+    ${token.name}: quantidade: ${
       purchasedTokens.tokens.length
     }, \nValor R$${token.value.toFixed(2)}`);
   });
